@@ -4,14 +4,17 @@ import twitter4j.Status;
 import util.ImageCache;
 
 import java.util.*;
+import java.util.Observable;
 
-
-public abstract class TwitterSource {
+public abstract class TwitterSource extends Observable {
     protected boolean doLogging = true;
+
     // The set of terms to look for in the stream of tweets
     protected Set<String> terms = new HashSet<>();
 
-    // Called each time a new set of filter terms has been established
+    /**
+     * Called each time a new set of filter terms has been established
+     */
     abstract protected void sync();
 
     protected void log(Status status) {
@@ -21,9 +24,9 @@ public abstract class TwitterSource {
         ImageCache.getInstance().loadImage(status.getUser().getProfileImageURL());
     }
 
-    public void setFilterTerms(Collection<String> newterms) {
+    public void setFilterTerms(Collection<String> newTerms) {
         terms.clear();
-        terms.addAll(newterms);
+        terms.addAll(newTerms);
         sync();
     }
 
@@ -32,9 +35,11 @@ public abstract class TwitterSource {
     }
 
     // This method is called each time a tweet is delivered to the application.
-    // TODO: Each active query should be informed about each incoming tweet so that
+    // Each active query should be informed about each incoming tweet so that
     //       it can determine whether the tweet should be displayed
-    protected void handleTweet(Status s) {
-
+    //todo: This method should notify all observers
+    protected void handleTweet(Status status) {
+        setChanged();
+        notifyObservers(status);
     }
 }
