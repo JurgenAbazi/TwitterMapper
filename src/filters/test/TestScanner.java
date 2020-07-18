@@ -3,38 +3,37 @@ package filters.test;
 import filters.Scanner;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestScanner {
     @Test
     public void testBasic() {
         Scanner x = new Scanner("trump");
-        assertTrue(x.peek().equals("trump"));
-        assertTrue(x.advance() == null);
+        assertEquals("trump", x.peek());
+        assertNull(x.advance());
     }
 
     @Test
     public void testAnd() {
         Scanner x = new Scanner("trump and evil");
-        assertTrue(x.peek().equals("trump"));
-        assertTrue(x.advance().equals("and"));
-        assertTrue(x.peek().equals("and"));
-        assertTrue(x.advance().equals("evil"));
-        assertTrue(x.peek().equals("evil"));
-        assertTrue(x.advance() == null);
+        assertEquals("trump", x.peek());
+        assertEquals("and", x.advance());
+        assertEquals("and", x.peek());
+        assertEquals("evil", x.advance());
+        assertEquals("evil", x.peek());
+        assertNull(x.advance());
     }
 
     @Test
     public void testAll() {
-        String expected[] = { "trump", "and", "(", "evil",
+        String[] expected = { "trump", "and", "(", "evil",
                 "or", "not", "(", "good", ")", ")" };
         runTest("trump and (evil or not (good))", expected);
     }
 
     @Test
     public void testOr() {
-        String expected[] = { "trump", "or", "evil" };
+        String[] expected = { "trump", "or", "evil" };
         runTest("trump or evil", expected);
     }
 
@@ -45,10 +44,10 @@ public class TestScanner {
             if (first) {
                 first = false;
             } else {
-                assertTrue(x.advance().equals(token));
+                assertEquals(x.advance(), token);
             }
-            assertTrue(x.peek().equals(token));
+            assertEquals(x.peek(), token);
         }
-        assertTrue(x.advance() == null);
+        assertNull(x.advance());
     }
 }
