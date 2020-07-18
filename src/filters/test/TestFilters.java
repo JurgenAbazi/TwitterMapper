@@ -9,7 +9,6 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 public class TestFilters {
     @Test
     public void testBasic() {
@@ -27,6 +26,26 @@ public class TestFilters {
         assertFalse(f.matches(makeStatus("fred Flintstone")));
         assertTrue(f.matches(makeStatus("Red Skelton")));
         assertTrue(f.matches(makeStatus("red Skelton")));
+    }
+
+    @Test
+    public void testAnd() {
+        Filter f = new AndFilter(new BasicFilter("fred"), new BasicFilter("Flintstone"));
+        assertTrue(f.matches(makeStatus("Fred Flintstone")));
+        assertTrue(f.matches(makeStatus("fred Flintstone")));
+        assertFalse(f.matches(makeStatus("Fred Skelton")));
+        assertFalse(f.matches(makeStatus("Red Skelton")));
+        assertFalse(f.matches(makeStatus("red Skelton")));
+    }
+
+    @Test
+    public void testOr() {
+        Filter f = new OrFilter(new BasicFilter("fred"), new BasicFilter("Flintstone"));
+        assertTrue(f.matches(makeStatus("Fred Flintstone")));
+        assertTrue(f.matches(makeStatus("fred Flintstone")));
+        assertTrue(f.matches(makeStatus("Fred Skelton")));
+        assertFalse(f.matches(makeStatus("Red Skelton")));
+        assertFalse(f.matches(makeStatus("red Skelton")));
     }
 
     private Status makeStatus(String text) {

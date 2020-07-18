@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
  * A basic filter that matches every tweet that contains the given word
  */
 public class BasicFilter implements Filter {
-    final private String word;
-    final private Pattern pattern;
+    private final String word;
+    private final Pattern pattern;
 
     public BasicFilter(String word) {
         this.word = word;
