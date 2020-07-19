@@ -5,8 +5,6 @@ import query.Query;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ContentPanel extends JPanel {
     private JSplitPane topLevelSplitPane;
@@ -61,14 +59,11 @@ public class ContentPanel extends JPanel {
         colorPanel.setPreferredSize(new Dimension(30, 30));
         JButton removeButton = new JButton("X");
         removeButton.setPreferredSize(new Dimension(30, 20));
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                app.terminateQuery(query);
-                query.terminate();
-                existingQueryList.remove(newQueryPanel);
-                revalidate();
-            }
+        removeButton.addActionListener(e -> {
+            app.terminateQuery(query);
+            query.terminate();
+            existingQueryList.remove(newQueryPanel);
+            revalidate();
         });
 
         GridBagConstraints c = new GridBagConstraints();
@@ -77,12 +72,7 @@ public class ContentPanel extends JPanel {
         c = new GridBagConstraints();
         JCheckBox checkbox = new JCheckBox(query.getQueryString());
         checkbox.setSelected(true);
-        checkbox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                app.updateVisibility();
-            }
-        });
+        checkbox.addActionListener(e -> app.updateVisibility());
         query.setCheckBox(checkbox);
         c.weightx = 1.0;
         c.fill = GridBagConstraints.HORIZONTAL;
