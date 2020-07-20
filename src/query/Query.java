@@ -5,7 +5,8 @@ import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.Layer;
 import twitter4j.Status;
-import ui.MapMarkerSimple;
+import twitter4j.User;
+import ui.MapMarkerWithImage;
 import util.Util;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ public class Query implements Observer {
     // The map on which to display markers when the query matches
     private final JMapViewer map;
     // Each query has its own "layer" so they can be turned on and off all at once
-    private Layer layer;
+    private final Layer layer;
     // The color of the outside area of the marker
     private final Color color;
     // The string representing the filter for this query
@@ -30,6 +31,8 @@ public class Query implements Observer {
     private final Filter filter;
     // The checkBox in the UI corresponding to this query (so we can turn it on and off and delete it)
     private JCheckBox checkBox;
+
+    private MapMarkerWithImage mapMarkerWithImage;
 
     public Query(String queryString, Color color, JMapViewer map) {
         this.queryString = queryString;
@@ -78,6 +81,7 @@ public class Query implements Observer {
      */
     public void terminate() {
         layer.setVisible(false);
+        map.removeMapMarker(mapMarkerWithImage);
     }
 
     @Override
@@ -90,9 +94,13 @@ public class Query implements Observer {
         Status status = (Status) o;
         if (filter.matches(status)) {
             Coordinate coordinate = Util.statusCoordinate(status);
-            Coordinate coordinate2 = Util.GeoLocationToCoordinate(status.getGeoLocation());
-            map.addMapMarker(new MapMarkerSimple(layer, coordinate));
+            User user = status.getUser();
+            String profileImageURL = user.getProfileImageURL();
+            String tweet = status.getText();
+            mapMarkerWithImage = new MapMarkerWithImage(getLayer(), coordinate, getColor(), profileImageURL, tweet);
+            map.addMapMarker(mapMarkerWithImage);
         }
     }
+
 }
 
