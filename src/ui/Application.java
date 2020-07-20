@@ -124,8 +124,15 @@ public class Application extends JFrame {
             public void mouseMoved(MouseEvent e) {
                 Point p = e.getPoint();
                 ICoordinate pos = map().getPosition(p);
-                // TODO: Use the following method to set the text that appears at the mouse cursor
-                map().setToolTipText("This is a tooltip");
+
+                List<MapMarker> markerList = getMarkersCovering(pos, pixelWidth(p));
+                if (!markerList.isEmpty()) {
+                    MapMarker m = markerList.get(markerList.size() - 1);
+                    MapMarkerWithImage mapMarkerWithImage = (MapMarkerWithImage) m;
+                    String tweet = mapMarkerWithImage.getTweet();
+                    String profilePictureURL = mapMarkerWithImage.getProfileImageUrl();
+                    map().setToolTipText("<html><img src=" + profilePictureURL + " height=\"42\" width=\"42\">" + tweet + "</html>");
+                }
             }
         });
     }
