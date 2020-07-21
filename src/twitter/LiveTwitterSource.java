@@ -1,57 +1,68 @@
 package twitter;
 
 import twitter4j.*;
-import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.conf.Configuration;
 
 /**
- * Encapsulates the connection to Twitter
- *
- * Terms to include in the returned tweets can be set with setFilterTerms
- *
- * Implements Observable - each received tweet is signalled to all observers
+ * Encapsulates the connection to Twitter.
+ * Terms to include in the returned tweets can be set with setFilterTerms.
+ * Implements Observable - each received tweet is signalled to all observers.
  */
 public class LiveTwitterSource extends TwitterSource {
+    /**
+     * Streams tweets in realtime.
+     */
     private TwitterStream twitterStream;
-    private StatusListener listener;
 
+    /**
+     * Listens for incoming tweets.
+     */
+    private StatusListener statusListener;
+
+    /**
+     * Default Constructor.
+     *
+     * Initializes the Live Twitter Stream.
+     */
     public LiveTwitterSource() {
         initializeTwitterStream();
     }
 
+    /**
+     * Method which creates and initializes the TwitterStream.
+     */
+    private void initializeTwitterStream() {
+        Configuration configuration = ConfigurationProvider.getDefaultConfiguration();
+        twitterStream = new TwitterStreamFactory(configuration).getInstance();
+        initializeListener();
+        twitterStream.addListener(statusListener);
+    }
+
+    /**
+     * Initializes the Listener.
+     * It listens for new statuses, and decides if it should handle them or not.
+     */
+    private void initializeListener() {
+        statusListener = new StatusAdapter() {
+            @Override
+            public void onStatus(Status status) {
+                if (status.getPlace() != null) {
+                    handleTweet(status);
+                }
+            }
+        };
+    }
+
+    /**
+     * Method that is called when a new set of filter terms has been established.
+     */
+    @Override
     protected void sync() {
         FilterQuery filter = new FilterQuery();
-        // https://stackoverflow.com/questions/21383345/using-multiple-threads-to-get-data-from-twitter-using-twitter4j
         String[] queriesArray = terms.toArray(new String[0]);
         filter.track(queriesArray);
 
         System.out.println("Syncing live Twitter stream with " + terms);
-
         twitterStream.filter(filter);
-    }
-
-    private void initializeListener() {
-        listener = new StatusAdapter() {
-            @Override
-            public void onStatus(Status status) {
-                // This method is called each time a tweet is delivered by the twitter API
-                if (status.getPlace() != null) {
-                    handleTweet(status);
-                }
-           }
-        };
-    }
-
-    // Create ConfigurationBuilder and pass in necessary credentials to authorize properly, then create TwitterStream.
-    private void initializeTwitterStream() {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setOAuthConsumerKey("ooR089Dty29SlzZgqMWtdPtr9")
-                .setOAuthConsumerSecret("VzOPVwCFxv0QajLWYCTcUBRytWmwsdM42moPWBpSnkJ8rOMZVg")
-                .setOAuthAccessToken("1281304163863977987-fVvFvSRC7SZfswoIByPk5qoaHYjNE2")
-                .setOAuthAccessTokenSecret("kpvIp2zeTLkhxPx9iMYpi6if7x418DGgsYoCYongH6Joi");
-
-        // Pass the ConfigurationBuilder in when constructing TwitterStreamFactory.
-        twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
-        initializeListener();
-        twitterStream.addListener(listener);
     }
 }

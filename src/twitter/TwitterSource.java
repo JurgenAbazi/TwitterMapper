@@ -6,40 +6,76 @@ import util.ImageCache;
 import java.util.*;
 import java.util.Observable;
 
+/**
+ * Abstract class that encapsulates the connection to Twitter.
+ * Implements Observable - each received tweet is signalled to all observers.
+ * Deprecated methods and classes warnings are suppressed since Observer and Observable are requirements of the project.
+ */
+@SuppressWarnings("deprecation")
 public abstract class TwitterSource extends Observable {
-    protected boolean doLogging = true;
-
-    // The set of terms to look for in the stream of tweets
-    protected Set<String> terms = new HashSet<>();
+    /**
+     * If set to true, some methods with log the statuses in the console.
+     */
+    protected boolean doLogging;
 
     /**
-     * Called each time a new set of filter terms has been established
+     * The set of terms to look for in the stream of tweets.
      */
-    abstract protected void sync();
+    protected Set<String> terms;
 
-    protected void log(Status status) {
+    /**
+     * Default constructor.
+     */
+    protected TwitterSource() {
+        doLogging = true;
+        terms = new HashSet<>();
+    }
+
+    /**
+     * Saves the image of the status in the ImageCache.
+     * If doLogging is set to true, it logs the status name and text in the console.
+     *
+     * @param status The twitter status.
+     */
+    protected void saveStatusImageToCache(Status status) {
         if (doLogging) {
             System.out.println(status.getUser().getName() + ": " + status.getText());
         }
         ImageCache.getInstance().loadImage(status.getUser().getProfileImageURL());
     }
 
+    /**
+     * Setter method for the set of terms.
+     *
+     * @param newTerms New collection of terms.
+     */
     public void setFilterTerms(Collection<String> newTerms) {
         terms.clear();
         terms.addAll(newTerms);
         sync();
     }
 
+    /**
+     * Getter methods for the terms of the filter.
+     *
+     * @return The terms as an ArrayList.
+     */
     public List<String> getFilterTerms() {
         return new ArrayList<>(terms);
     }
 
-    // This method is called each time a tweet is delivered to the application.
-    // Each active query should be informed about each incoming tweet so that
-    //       it can determine whether the tweet should be displayed
-    //todo: This method should notify all observers
+    /**
+     * Notifies observers (Queries) each time a new tweet comes so they can determine if it should be displayed or not.
+     *
+     * @param status The tweet that is delivered to the application.
+     */
     protected void handleTweet(Status status) {
         setChanged();
         notifyObservers(status);
     }
+
+    /**
+     * Abstract method that is called when a new set of filter terms has been established.
+     */
+    protected abstract void sync();
 }

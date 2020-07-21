@@ -2,64 +2,89 @@ package twitter.test;
 
 import org.junit.jupiter.api.Test;
 import twitter.PlaybackTwitterSource;
-import twitter4j.Status;
+import twitter.TwitterSource;
+import twitter.TwitterSourceFactory;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static twitter.TwitterSourceFactory.SourceType.*;
 
 /**
- * Test the basic functionality of the TwitterSource
+ * Test the basic functionality of the PlaybackTwitterSource.
  */
 public class TestPlaybackTwitterSource {
-
+    /**
+     * Method that testes the PlaybackTwitterSource object.
+     */
     @Test
     public void testSetup() {
-        PlaybackTwitterSource source = new PlaybackTwitterSource(1.0);
-        TestObserver to = new TestObserver();
-        source.addObserver(to);
-        source.setFilterTerms(set("food"));
+        TwitterSourceFactory factory = new TwitterSourceFactory();
+        factory.setSpeedup(1.0);
+        PlaybackTwitterSource source = (PlaybackTwitterSource) factory.getTwitterSource(PLAYBACK);
 
-        pause(3000);
-        assertTrue(to.getNTweets() > 0, "Expected getNTweets() to be > 0, was " + to.getNTweets());
-        assertTrue(to.getNTweets() <= 10, "Expected getNTweets() to be <= 10, was " + to.getNTweets());
+        DummyObserver dummyObserver = new DummyObserver();
+        source.addObserver(dummyObserver);
 
-        int firstBunch = to.getNTweets();
-        System.out.println("Now adding 'the'");
-        source.setFilterTerms(set("food", "the"));
-
-        pause(3000);
-        assertTrue(to.getNTweets() > 0, "Expected getNTweets() to be > 0, was " + to.getNTweets());
-        assertTrue(to.getNTweets() > firstBunch, "Expected getNTweets() to be < firstBunch (" + firstBunch + "), was " + to.getNTweets());
-        assertTrue(to.getNTweets() <= 10, "Expected getNTweets() to be <= 10, was " + to.getNTweets());
+        testTwitterSourceWithOneTermFilter(source, dummyObserver);
+        testTwitterSourceWithTwoTermsFilter(source, dummyObserver);
     }
 
-    private void pause(int millis) {
+    /**
+     * Tests tne source with a filter composed of 1 term.
+     *
+     * @param source The twitter source where terms are set.
+     * @param observer The DummyObserver object that will observe the source.
+     */
+    private void testTwitterSourceWithOneTermFilter(TwitterSource source, DummyObserver observer) {
+        source.setFilterTerms(createSet("food"));
+        pause();
+
+        int numberOfTweets = observer.getNumberOfTweets();
+        assertTrue(numberOfTweets > 0, "Expected getNTweets() to be > 0, was " + numberOfTweets);
+        assertTrue(numberOfTweets <= 10, "Expected getNTweets() to be <= 10, was " + numberOfTweets);
+    }
+
+    /**
+     * Tests tne source with a filter composed of 2 terms.
+     *
+     * @param source The twitter source where terms are set.
+     * @param observer The DummyObserver object that will observe the source.
+     */
+    private void testTwitterSourceWithTwoTermsFilter(TwitterSource source, DummyObserver observer) {
+        int firstBunch = observer.getNumberOfTweets();
+        System.out.println("Now adding 'the'");
+        source.setFilterTerms(createSet("food", "the"));
+        pause();
+
+        int numberOfTweets = observer.getNumberOfTweets();
+        assertTrue(numberOfTweets > 0, "Expected getNTweets() to be > 0, was " + numberOfTweets);
+        assertTrue(numberOfTweets > firstBunch, "Expected getNTweets() to be < firstBunch (" + firstBunch + "), was " + numberOfTweets);
+        assertTrue(numberOfTweets <= 10, "Expected getNTweets() to be <= 10, was " + numberOfTweets);
+    }
+
+    /**
+     * Puts the current thread to sleep for 3000 milliseconds.
+     */
+    private void pause() {
         try {
-            Thread.sleep(millis);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Create a set from elements of same type, that are passed as var-args.
+     *
+     * @param p   Elements.
+     * @param <E> Generic type of the set elements.
+     * @return The newly created set.
+     */
     @SafeVarargs
-    private final <E> Set<E> set(E... p) {
+    private final <E> Set<E> createSet(E... p) {
         Set<E> ans = new HashSet<>();
         Collections.addAll(ans, p);
         return ans;
-    }
-
-    private static class TestObserver implements Observer {
-        private int nTweets = 0;
-
-        @Override
-        public void update(Observable o, Object arg) {
-            Status s = (Status) arg;
-            nTweets++;
-        }
-
-        public int getNTweets() {
-            return nTweets;
-        }
     }
 }
