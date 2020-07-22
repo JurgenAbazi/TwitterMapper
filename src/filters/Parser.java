@@ -31,26 +31,30 @@ package filters;
  */
 public class Parser {
     private final Scanner scanner;
-    private static final String LPAREN = "(";
-    private static final String RPAREN = ")";
-    private static final String OR = "or";
-    private static final String AND = "and";
-    private static final String NOT = "not";
+    private static final String LPAREN;
+    private static final String RPAREN;
+    private static final String OR;
+    private static final String AND;
+    private static final String NOT;
+
+    static {
+        LPAREN = "(";
+        RPAREN = ")";
+        OR = "or";
+        AND = "and";
+        NOT = "not";
+    }
 
     public Parser(String input) {
         scanner = new Scanner(input);
     }
 
     public Filter parse() throws SyntaxError {
-        Filter ans = expr();
+        Filter ans = orexpr();
         if (scanner.peek() != null) {
             throw new SyntaxError("Extra stuff at end of input");
         }
         return ans;
-    }
-
-    private Filter expr() throws SyntaxError {
-        return orexpr();
     }
 
     private Filter orexpr() throws SyntaxError {
@@ -92,7 +96,7 @@ public class Parser {
         String token = scanner.peek();
         if (token.equals(LPAREN)) {
             scanner.advance();
-            Filter sub = expr();
+            Filter sub = orexpr();
             if (!scanner.peek().equals(RPAREN)) {
                 throw new SyntaxError("Expected ')'");
             }

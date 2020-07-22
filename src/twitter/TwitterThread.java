@@ -1,7 +1,7 @@
 package twitter;
 
 import twitter4j.Status;
-import util.ObjectSource;
+import util.ObjectSourceStream;
 
 /**
  * Runnable abstract class that reads a playback source object.
@@ -10,7 +10,7 @@ public abstract class TwitterThread implements Runnable {
     /**
      * Object encapsulating the source of the playback file.
      */
-    private final ObjectSource source;
+    private final ObjectSourceStream source;
 
     /**
      * The speedup rate with which the files will be read.
@@ -33,7 +33,7 @@ public abstract class TwitterThread implements Runnable {
      * @param source The source of the playback file.
      * @param speedup The speedup rate of the playback twitter source.
      */
-    public TwitterThread(ObjectSource source, double speedup) {
+    public TwitterThread(ObjectSourceStream source, double speedup) {
         playbackStartTime = System.currentTimeMillis() + 1000;
         recordStartTime = 0;
         this.source = source;

@@ -5,7 +5,6 @@ import util.Util;
 
 import java.awt.image.BufferedImage;
 
-
 public class TestImage {
     @Test
     public void testImage() {

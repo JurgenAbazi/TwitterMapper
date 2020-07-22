@@ -2,6 +2,7 @@ package filters;
 
 import twitter4j.Status;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AndFilter implements Filter {
@@ -20,7 +21,8 @@ public class AndFilter implements Filter {
 
     @Override
     public List<String> terms() {
-        List<String> terms = leftChild.terms();
+        List<String> terms = new ArrayList<>();
+        terms.addAll(leftChild.terms());
         terms.addAll(rightChild.terms());
         return terms;
     }

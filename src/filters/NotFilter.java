@@ -15,10 +15,10 @@ public class NotFilter implements Filter {
     }
 
     /**
-     * A not filter matches when its child doesn't, and vice versa
+     * A not filter matches when its child doesn't, and vice versa.
      *
-     * @param status the tweet to check
-     * @return whether or not it matches
+     * @param status the tweet to check.
+     * @return whether or not it matches.
      */
     @Override
     public boolean matches(Status status) {

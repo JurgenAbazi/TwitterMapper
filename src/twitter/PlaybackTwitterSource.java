@@ -1,7 +1,7 @@
 package twitter;
 
 import twitter4j.Status;
-import util.ObjectSource;
+import util.ObjectSourceStream;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,7 +24,7 @@ public class PlaybackTwitterSource extends TwitterSource {
     /**
      * The source of the recorded stream of tweets.
      */
-    private final ObjectSource source;
+    private final ObjectSourceStream source;
 
     /**
      * 1-arg Constructor.
@@ -32,7 +32,7 @@ public class PlaybackTwitterSource extends TwitterSource {
      * @param speedup The speedup rate for the playback.
      */
     public PlaybackTwitterSource(double speedup) {
-        this.source = new ObjectSource("data/TwitterCapture.jobj");
+        this.source = new ObjectSourceStream("data/TwitterCapture.jobj");
         this.threadStarted = false;
         this.speedup = speedup;
     }

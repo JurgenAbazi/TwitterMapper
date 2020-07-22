@@ -2,17 +2,16 @@ package util;
 
 import java.io.*;
 
+/**
+ * Write objects to a file.
+ */
+public class ObjectSinkStream {
+    private ObjectOutputStream objectOutputStream;
 
-public class ObjectSink {
-    private File file;
-    private ObjectOutputStream outstream;
-
-    public ObjectSink(String filename) {
+    public ObjectSinkStream(String filename) {
         try {
-            file = new File(filename);
-            outstream = new ObjectOutputStream(new FileOutputStream(file));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            File file = new File(filename);
+            objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -20,7 +19,7 @@ public class ObjectSink {
 
     public void storeObject(Object o) {
         try {
-            outstream.writeObject(o);
+            objectOutputStream.writeObject(o);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -28,7 +27,7 @@ public class ObjectSink {
 
     public void close() {
         try {
-            outstream.close();
+            objectOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

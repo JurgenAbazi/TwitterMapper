@@ -101,7 +101,7 @@ public class NewQueryPanel extends JPanel {
     }
 
     private void addQuery(String newQuery) {
-        Query query = new Query(newQuery, colorSetter.getBackground(), app.map());
+        Query query = new Query(newQuery, colorSetter.getBackground(), app.getMap());
         app.addQuery(query);
         colorSetter.setBackground(getRandomColor());
     }

@@ -14,18 +14,26 @@ import java.util.Map;
  * Singleton that caches images loaded from twitter urls.
  */
 public class ImageCache {
-    private static ImageCache theInstance = new ImageCache();
     private BufferedImage defaultImage;
+    private final Map<String, BufferedImage> cache;
+    private final Map<String, String> pathCache;
+    private final static char[] hexArray;
 
-    public static ImageCache getInstance() {
-        return theInstance;
+    static {
+        hexArray = "0123456789ABCDEF".toCharArray();
     }
 
-    private Map<String, BufferedImage> cache = new HashMap<>();
-    private Map<String, String> pathCache = new HashMap<>();
-
     private ImageCache() {
+        cache = new HashMap<>();
+        pathCache = new HashMap<>();
+    }
 
+    private static class LazyHolder {
+        static final ImageCache INSTANCE = new ImageCache();
+    }
+
+    public static ImageCache getInstance() {
+        return LazyHolder.INSTANCE;
     }
 
     public BufferedImage getImage(String url) {
@@ -41,24 +49,14 @@ public class ImageCache {
         BufferedImage ans = cache.get(url);
         if (ans == null) {
             cache.put(url, defaultImage);
-            Thread t = new Thread() {
-                @Override
-                public void run() {
-                    BufferedImage ans = Util.imageFromURL(url);
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            cache.put(url, ans);
-                        }
-                    });
-
-                }
-            };
-            t.run();
+            Thread t = new Thread(() -> {
+                BufferedImage ans1 = Util.imageFromURL(url);
+                SwingUtilities.invokeLater(() -> cache.put(url, ans1));
+            });
+            t.start();
         }
     }
 
-    private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {
@@ -76,11 +74,11 @@ public class ImageCache {
             md.update(bytes);
             byte[] hash = md.digest();
             return bytesToHex(hash);
-
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Can't find SHA-256");
         }
     }
+
     private String hashURL(String url) {
         String hash = pathCache.get(url);
         if (hash == null) {
@@ -95,15 +93,20 @@ public class ImageCache {
         if (!dir.isDirectory()) {
             dir.mkdir();
         }
+
         String pathString = "data/imagecache/" + path + ".png";
         File f = new File(pathString);
         pathString = f.getAbsolutePath();
-        if (f.canRead()) return pathString;
+        if (f.canRead()) {
+            return pathString;
+        }
+
         try {
             ImageIO.write(image, "png", f);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return pathString;
     }
 

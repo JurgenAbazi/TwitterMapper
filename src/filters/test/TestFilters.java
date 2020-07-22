@@ -7,7 +7,13 @@ import twitter4j.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Class used for testing the different type of Filters.
+ */
 public class TestFilters {
+    /**
+     * Unit Test for the BasicFilter.
+     */
     @Test
     public void testBasic() {
         Filter f = new BasicFilter("fred");
@@ -17,6 +23,9 @@ public class TestFilters {
         assertFalse(f.matches(makeStatus("red Skelton")));
     }
 
+    /**
+     * Unit Test for the NotFilter.
+     */
     @Test
     public void testNot() {
         Filter f = new NotFilter(new BasicFilter("fred"));
@@ -26,6 +35,9 @@ public class TestFilters {
         assertTrue(f.matches(makeStatus("red Skelton")));
     }
 
+    /**
+     * Unit Test for the AndFilter.
+     */
     @Test
     public void testAnd() {
         Filter f = new AndFilter(new BasicFilter("fred"), new BasicFilter("Flintstone"));
@@ -36,6 +48,9 @@ public class TestFilters {
         assertFalse(f.matches(makeStatus("red Skelton")));
     }
 
+    /**
+     * Unit Test for the OrFilter.
+     */
     @Test
     public void testOr() {
         Filter f = new OrFilter(new BasicFilter("fred"), new BasicFilter("Flintstone"));
@@ -46,6 +61,12 @@ public class TestFilters {
         assertFalse(f.matches(makeStatus("red Skelton")));
     }
 
+    /**
+     * Creates a dummy status object.
+     *
+     * @param text The text message of the status.
+     * @return The status.
+     */
     private Status makeStatus(String text) {
         return new DummyStatus(text);
     }

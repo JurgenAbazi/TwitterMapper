@@ -93,7 +93,7 @@ public class Query implements Observer {
     public void update(Observable observable, Object o) {
         Status status = (Status) o;
         if (filter.matches(status)) {
-            Coordinate coordinate = Util.statusCoordinate(status);
+            Coordinate coordinate = Util.getStatusCoordinates(status);
             User user = status.getUser();
             String profileImageURL = user.getProfileImageURL();
             String tweet = status.getText();

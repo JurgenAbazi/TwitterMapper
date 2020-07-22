@@ -9,20 +9,34 @@ import java.util.regex.Pattern;
  * A simple scanner for a language consisting of words and parentheses.
  */
 public class Scanner {
-    private List<String> tokens;
+    private final List<String> tokens;
 
+    /**
+     * Constructor.
+     *
+     * @param input
+     */
     public Scanner(String input) {
-        // This pattern matches words ([a-zA-Z]+), left and right parens, and whitespace
-        Pattern tokenPattern = Pattern.compile("\\(|\\)|[a-zA-Z]+|\\s+");
-
-        // This simple scanner scans the entire input in its constructor, building a list of tokens
-        // which it then returns as necessary in response to calls to its peek and advance methods.
         tokens = new LinkedList<>();
-        Matcher m = tokenPattern.matcher(input);
-        while (m.find()) {
-            String token = m.group();
-            // Throw away any white space
-            if (token.matches("\\s+")) continue;
+        removesWhiteSpacesFromTokens(input);
+    }
+
+    /**
+     * Throws away any white space.
+     * This simple scanner scans the entire input in its constructor, building a list of tokens
+     * which it then returns as necessary in response to calls to its peek and advance methods.
+     * The tokenPattern matches words ([a-zA-Z]+), left and right parenthesis, and whitespaces.
+     *
+     * @param input
+     */
+    private void removesWhiteSpacesFromTokens(String input) {
+        Pattern tokenPattern = Pattern.compile("\\(|\\)|[a-zA-Z]+|\\s+");
+        Matcher matcher = tokenPattern.matcher(input);
+        while (matcher.find()) {
+            String token = matcher.group();
+            if (token.matches("\\s+")) {
+                continue;
+            }
             tokens.add(token);
         }
     }

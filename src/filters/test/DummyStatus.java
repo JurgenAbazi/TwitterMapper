@@ -4,9 +4,20 @@ import twitter4j.*;
 
 import java.util.Date;
 
+/**
+ * Dummy implementation of the Status interface. Used for testing purposes.
+ */
 public class DummyStatus implements Status {
+    /**
+     * The text of the status.
+     */
     private final String text;
 
+    /**
+     * Constructor.
+     *
+     * @param text The status text.
+     */
     public DummyStatus(String text) {
         this.text = text;
     }

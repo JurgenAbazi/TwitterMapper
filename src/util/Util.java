@@ -13,32 +13,40 @@ import java.net.URL;
  * Helpful methods that don't clearly fit anywhere else.
  */
 public class Util {
-    public static GeoLocation statusLocation(Status status) {
+    public static BufferedImage defaultImage;
+
+    static {
+        defaultImage = imageFromURL("http://png-2.findicons.com/files/icons/1995/web_application/48/smiley.png");
+    }
+
+    public static Coordinate getCoordinateFromGeoLocation(GeoLocation geoLocation) {
+        return new Coordinate(geoLocation.getLatitude(), geoLocation.getLongitude());
+    }
+
+    public static GeoLocation getStatusGeoLocation(Status status) {
+        return new GeoLocation(getStatusLatitude(status), getStatusLongitude(status));
+    }
+
+    public static Coordinate getStatusCoordinates(Status status) {
+        return new Coordinate(getStatusLatitude(status), getStatusLongitude(status));
+    }
+
+    private static double getStatusLatitude(Status status) {
         GeoLocation bottomRight = status.getPlace().getBoundingBoxCoordinates()[0][0];
         GeoLocation topLeft = status.getPlace().getBoundingBoxCoordinates()[0][2];
-        double newLat = (bottomRight.getLatitude() + topLeft.getLatitude())/2;
-        double newLon = (bottomRight.getLongitude() + topLeft.getLongitude())/2;
-        return new GeoLocation(newLat, newLon);
+        return (bottomRight.getLatitude() + topLeft.getLatitude()) / 2;
     }
 
-    public static Coordinate GeoLocationToCoordinate(GeoLocation loc) {
-        return new Coordinate(loc.getLatitude(), loc.getLongitude());
-    }
-
-    public static Coordinate statusCoordinate(Status status) {
+    private static double getStatusLongitude(Status status) {
         GeoLocation bottomRight = status.getPlace().getBoundingBoxCoordinates()[0][0];
         GeoLocation topLeft = status.getPlace().getBoundingBoxCoordinates()[0][2];
-        double newLat = (bottomRight.getLatitude() + topLeft.getLatitude())/2;
-        double newLon = (bottomRight.getLongitude() + topLeft.getLongitude())/2;
-        return new Coordinate(newLat, newLon);
+        return (bottomRight.getLongitude() + topLeft.getLongitude()) / 2;
     }
 
-    public static BufferedImage defaultImage = imageFromURL("http://png-2.findicons.com/files/icons/1995/web_application/48/smiley.png");
     public static BufferedImage imageFromURL(String url) {
         try {
             BufferedImage img = ImageIO.read(new URL(url));
-            if (img == null) return defaultImage;
-            return img;
+            return img == null ? defaultImage : img;
         } catch (IOException e) {
             return defaultImage;
         }
