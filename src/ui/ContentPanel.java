@@ -16,47 +16,56 @@ public class ContentPanel extends JPanel {
     private Application app;
 
     public ContentPanel(Application app) {
+        init(app);
+
+        // NOTE: We wrap existingQueryList in a container so it gets a pretty border.
+        JPanel layerPanelContainer = new JPanel();
+        existingQueryList = new JPanel();
+        existingQueryList.setLayout(new javax.swing.BoxLayout(existingQueryList, javax.swing.BoxLayout.Y_AXIS));
+
+        layerPanelContainer.setLayout(new BorderLayout());
+        layerPanelContainer.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createTitledBorder("Current Queries"),
+                        BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        layerPanelContainer.add(existingQueryList, BorderLayout.NORTH);
+        buildQuerySplitPane(layerPanelContainer);
+        buildTopLevelSplitPane();
+        revalidate();
+        repaint();
+    }
+
+    private void init(Application app) {
         this.app = app;
 
         map = new JMapViewer();
         map.setMinimumSize(new Dimension(100, 50));
         setLayout(new BorderLayout());
         newQueryPanel = new NewQueryPanel(app);
+    }
 
-        // NOTE: We wrap existingQueryList in a container so it gets a pretty border.
-        JPanel layerPanelContainer = new JPanel();
-        existingQueryList = new JPanel();
-        existingQueryList.setLayout(new javax.swing.BoxLayout(existingQueryList, javax.swing.BoxLayout.Y_AXIS));
-        layerPanelContainer.setLayout(new BorderLayout());
-        layerPanelContainer.setBorder(
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder("Current Queries"),
-                        BorderFactory.createEmptyBorder(5,5,5,5)));
-        layerPanelContainer.add(existingQueryList, BorderLayout.NORTH);
-
+    private void buildQuerySplitPane(JPanel layerPanelContainer) {
         querySplitPane = new JSplitPane(0);
         querySplitPane.setDividerLocation(150);
         querySplitPane.setTopComponent(newQueryPanel);
         querySplitPane.setBottomComponent(layerPanelContainer);
+    }
 
+    private void buildTopLevelSplitPane() {
         topLevelSplitPane = new JSplitPane(1);
         topLevelSplitPane.setDividerLocation(150);
         topLevelSplitPane.setLeftComponent(querySplitPane);
         topLevelSplitPane.setRightComponent(map);
-
         add(topLevelSplitPane, "Center");
-        revalidate();
-
-        repaint();
     }
 
     // Add a new query to the set of queries and update the UI to reflect the new query.
-    public void addQuery(Query query) {
-        JPanel newQueryPanel = new JPanel();
-        newQueryPanel.setLayout(new GridBagLayout());
+    public void addQueryToUI(Query query) {
+
         JPanel colorPanel = new JPanel();
         colorPanel.setBackground(query.getColor());
         colorPanel.setPreferredSize(new Dimension(30, 30));
+
         JButton removeButton = new JButton("X");
         removeButton.setPreferredSize(new Dimension(30, 20));
         removeButton.addActionListener(e -> {
@@ -66,6 +75,9 @@ public class ContentPanel extends JPanel {
             revalidate();
         });
 
+
+        JPanel newQueryPanel = new JPanel();
+        newQueryPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         newQueryPanel.add(colorPanel, c);
 
@@ -83,7 +95,7 @@ public class ContentPanel extends JPanel {
         validate();
     }
 
-    public JMapViewer getViewer() {
+    public JMapViewer getMapViewer() {
         return map;
     }
 }

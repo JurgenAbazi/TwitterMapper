@@ -8,6 +8,6 @@ import java.awt.image.BufferedImage;
 public class TestImage {
     @Test
     public void testImage() {
-        BufferedImage norm = Util.imageFromURL("https://www.cs.ubc.ca/~norm");
+        BufferedImage norm = Util.getImageFromURL("https://www.cs.ubc.ca/~norm");
     }
 }

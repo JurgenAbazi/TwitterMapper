@@ -9,7 +9,7 @@ import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import query.Query;
 import twitter.TwitterSource;
 import twitter.TwitterSourceFactory;
-import util.SphericalGeometryUtils;
+import util.Util;
 
 import javax.swing.*;
 import java.awt.*;
@@ -158,7 +158,7 @@ public class Application extends JFrame {
     private double pixelWidth(Point p) {
         ICoordinate center = getMap().getPosition(p);
         ICoordinate edge = getMap().getPosition(new Point(p.x + 1, p.y));
-        return SphericalGeometryUtils.distanceBetween(center, edge);
+        return Util.distanceBetween(center, edge);
     }
 
     /**
@@ -185,7 +185,7 @@ public class Application extends JFrame {
         Set<Layer> visibleLayers = getVisibleLayers();
         for (MapMarker m : getMap().getMapMarkerList()) {
             if (visibleLayers.contains(m.getLayer())) {
-                double distance = SphericalGeometryUtils.distanceBetween(m.getCoordinate(), pos);
+                double distance = Util.distanceBetween(m.getCoordinate(), pos);
                 if (distance < m.getRadius() * pixelWidth) {
                     ans.add(m);
                 }

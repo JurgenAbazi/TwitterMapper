@@ -29,10 +29,10 @@ public class ConfigurationProvider {
     private static final String ACCESS_TOKEN_SECRET;
 
     static {
-        CONSUMER_SECRET = "";
-        ACCESS_TOKEN = "";
-        CONSUMER_KEY = "";
-        ACCESS_TOKEN_SECRET = "";
+        CONSUMER_SECRET = "VzOPVwCFxv0QajLWYCTcUBRytWmwsdM42moPWBpSnkJ8rOMZVg";
+        ACCESS_TOKEN = "1281304163863977987-fVvFvSRC7SZfswoIByPk5qoaHYjNE2";
+        CONSUMER_KEY = "ooR089Dty29SlzZgqMWtdPtr9";
+        ACCESS_TOKEN_SECRET = "kpvIp2zeTLkhxPx9iMYpi6if7x418DGgsYoCYongH6Joi";
     }
 
     /**

@@ -6,8 +6,16 @@ import java.io.*;
  * Read objects from a file.
  */
 public class ObjectSourceStream {
+    /**
+     * The input stream object.
+     */
     private ObjectInputStream objectInputStream;
 
+    /**
+     * Constructor.
+     *
+     * @param filename The file that will be read.
+     */
     public ObjectSourceStream(String filename) {
         try {
             File file = new File(filename);
@@ -17,6 +25,11 @@ public class ObjectSourceStream {
         }
     }
 
+    /**
+     * Reads the object from the input stream.
+     *
+     * @return The object that is read.
+     */
     public Object readObject() {
         try {
             return objectInputStream.readObject();
@@ -27,6 +40,9 @@ public class ObjectSourceStream {
         return null;
     }
 
+    /**
+     * Closes the input stream.
+     */
     public void close() {
         try {
             objectInputStream.close();

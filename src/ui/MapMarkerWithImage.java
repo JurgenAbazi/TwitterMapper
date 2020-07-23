@@ -18,7 +18,7 @@ public class MapMarkerWithImage extends MapMarkerCircle {
         super(layer, null, coordinate, defaultMarkerSize, STYLE.FIXED, getDefaultStyle());
         setColor(Color.BLACK);
         setBackColor(color);
-        img1 = Util.imageFromURL(profileImageURL);
+        img1 = Util.getImageFromURL(profileImageURL);
         tweet1 = tweet;
         profileImageUrl = profileImageURL;
     }

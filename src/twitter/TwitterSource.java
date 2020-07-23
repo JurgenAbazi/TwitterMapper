@@ -41,7 +41,7 @@ public abstract class TwitterSource extends Observable {
         if (doLogging) {
             System.out.println(status.getUser().getName() + ": " + status.getText());
         }
-        ImageCache.getInstance().loadImage(status.getUser().getProfileImageURL());
+        ImageCache.getInstance().putImageInCache(status.getUser().getProfileImageURL());
     }
 
     /**
