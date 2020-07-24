@@ -16,20 +16,37 @@ import java.util.Observer;
 
 /**
  * A query over the twitter stream.
- * TODO: Task 4: you are to complete this class.
  */
+@SuppressWarnings("deprecation")
 public class Query implements Observer {
-    // The map on which to display markers when the query matches
+    /**
+     * The map on which to display markers when the query matches.
+     */
     private final JMapViewer map;
-    // Each query has its own "layer" so they can be turned on and off all at once
+
+    /**
+     * Each query has its own "layer" so they can be turned on and off all at once.
+     */
     private final Layer layer;
-    // The color of the outside area of the marker
+
+    /**
+     * The color of the outside area of the marker.
+     */
     private final Color color;
-    // The string representing the filter for this query
+
+    /**
+     * The string representing the filter for this query.
+     */
     private final String queryString;
-    // The filter parsed from the queryString
+
+    /**
+     * The filter parsed from the queryString.
+     */
     private final Filter filter;
-    // The checkBox in the UI corresponding to this query (so we can turn it on and off and delete it)
+
+    /**
+     * The checkBox in the UI corresponding to this query (so we can turn it on and off and delete it)
+     */
     private JCheckBox checkBox;
 
     private MapMarkerWithImage mapMarkerWithImage;
@@ -76,8 +93,6 @@ public class Query implements Observer {
 
     /**
      * This query is no longer interesting, so terminate it and remove all traces of its existence.
-     * <p>
-     * TODO: Implement this method
      */
     public void terminate() {
         layer.setVisible(false);

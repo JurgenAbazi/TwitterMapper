@@ -125,7 +125,7 @@ public class ImageCache {
     private String saveImageToFile(BufferedImage image, String path) {
         File dir = new File("data/imagecache");
         if (!dir.isDirectory()) {
-            dir.mkdir()
+            dir.mkdir();
         }
 
         String pathString = "data/imagecache/" + path + ".png";

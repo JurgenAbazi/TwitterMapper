@@ -55,18 +55,20 @@ public class Application extends JFrame {
         initialize();
         configureMap();
         scheduleBingTimer();
+        addMapMouseListeners();
     }
 
     /**
      * Initializes the attributes and builds GUI.
      */
     private void initialize() {
+        setSize(300, 300);
+
         twitterSource = new TwitterSourceFactory().getTwitterSource(LIVE);
         queries = new ArrayList<>();
         bing = new BingAerialTileSource();
-        contentPanel = new ContentPanel(this);
 
-        setSize(300, 300);
+        contentPanel = new ContentPanel(this);
         setLayout(new BorderLayout());
         add(contentPanel, BorderLayout.CENTER);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,7 +83,25 @@ public class Application extends JFrame {
         getMap().setZoomContolsVisible(true);
         getMap().setScrollWrapEnabled(true);
         getMap().setTileSource(bing);
-        addMapMouseListeners();
+    }
+
+    /**
+     * Method is used to load the tiles once the Bing attribution is ready.
+     */
+    private void scheduleBingTimer() {
+        Coordinate coordinate = new Coordinate(0, 0);
+        Timer bingTimer = new Timer();
+        TimerTask bingAttributionCheck = new TimerTask() {
+            @Override
+            public void run() {
+                String attributionText = bing.getAttributionText(0, coordinate, coordinate);
+                if (!attributionText.equals("Error loading Bing attribution data")) {
+                    getMap().setZoom(2);
+                    bingTimer.cancel();
+                }
+            }
+        };
+        bingTimer.schedule(bingAttributionCheck, 100, 200);
     }
 
     /**
@@ -99,29 +119,11 @@ public class Application extends JFrame {
                     MapMarker marker = markerList.get(markerList.size() - 1);
                     MapMarkerWithImage mapMarkerWithImage = (MapMarkerWithImage) marker;
                     String tweet = mapMarkerWithImage.getTweet();
-                    String profilePictureURL = mapMarkerWithImage.getProfileImageUrl();
-                    getMap().setToolTipText("<html><img src=" + profilePictureURL + " height=\"42\" width=\"42\">" + tweet + "</html>");
+                    String profilePictureURL = mapMarkerWithImage.getProfileImageURL();
+                    getMap().setToolTipText("<html><img src=" + profilePictureURL + " height=\"40\" width=\"40\">" + tweet + "</html>");
                 }
             }
         });
-    }
-
-    /**
-     * Method is used to load the tiles once the Bing attribution is ready.
-     */
-    private void scheduleBingTimer() {
-        Coordinate coordinate = new Coordinate(0, 0);
-        Timer bingTimer = new Timer();
-        TimerTask bingAttributionCheck = new TimerTask() {
-            @Override
-            public void run() {
-                if (!bing.getAttributionText(0, coordinate, coordinate).equals("Error loading Bing attribution data")) {
-                    getMap().setZoom(2);
-                    bingTimer.cancel();
-                }
-            }
-        };
-        bingTimer.schedule(bingAttributionCheck, 100, 200);
     }
 
     /**
@@ -130,8 +132,8 @@ public class Application extends JFrame {
      * @param query The new query object
      */
     public void addQuery(Query query) {
-        Set<String> allTerms = getQueryTerms();
         queries.add(query);
+        Set<String> allTerms = getQueryTerms();
         twitterSource.setFilterTerms(allTerms);
         contentPanel.addQueryToUI(query);
         twitterSource.addObserver(query);
@@ -186,7 +188,8 @@ public class Application extends JFrame {
         for (MapMarker m : getMap().getMapMarkerList()) {
             if (visibleLayers.contains(m.getLayer())) {
                 double distance = Util.distanceBetween(m.getCoordinate(), pos);
-                if (distance < m.getRadius() * pixelWidth) {
+                double radiusInPixels = m.getRadius() * pixelWidth;
+                if (distance < radiusInPixels) {
                     ans.add(m);
                 }
             }

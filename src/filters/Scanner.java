@@ -9,12 +9,15 @@ import java.util.regex.Pattern;
  * A simple scanner for a language consisting of words and parentheses.
  */
 public class Scanner {
+    /**
+     * List of tokens.
+     */
     private final List<String> tokens;
 
     /**
      * Constructor.
      *
-     * @param input
+     * @param input The String being scanned.
      */
     public Scanner(String input) {
         tokens = new LinkedList<>();

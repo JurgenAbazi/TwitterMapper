@@ -16,7 +16,7 @@ public class NewQueryPanel extends JPanel {
     private final JLabel queryLabel = new JLabel("Enter Search: ");
     private final JPanel colorSetter;
     private final Application app;
-    private Random random;
+    private final Random random;
 
     public NewQueryPanel(Application app) {
         this.app = app;

@@ -6,7 +6,7 @@ import util.ObjectSourceStream;
 /**
  * Runnable abstract class that reads a playback source object.
  */
-public abstract class TwitterThread implements Runnable {
+public abstract class PlaybackTwitterRunnable implements Runnable {
     /**
      * Object encapsulating the source of the playback file.
      */
@@ -33,7 +33,7 @@ public abstract class TwitterThread implements Runnable {
      * @param source The source of the playback file.
      * @param speedup The speedup rate of the playback twitter source.
      */
-    public TwitterThread(ObjectSourceStream source, double speedup) {
+    public PlaybackTwitterRunnable(ObjectSourceStream source, double speedup) {
         playbackStartTime = System.currentTimeMillis() + 1000;
         recordStartTime = 0;
         this.source = source;

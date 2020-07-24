@@ -52,7 +52,7 @@ public class PlaybackTwitterSource extends TwitterSource {
         if (!threadStarted) {
             threadStarted = true;
             ExecutorService executorService = Executors.newCachedThreadPool();
-            executorService.execute(new TwitterThread(source, speedup) {
+            executorService.execute(new PlaybackTwitterRunnable(source, speedup) {
                 @Override
                 public void operation(Status status) {
                     handleTweet(status);

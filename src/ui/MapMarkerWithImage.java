@@ -9,26 +9,31 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class MapMarkerWithImage extends MapMarkerCircle {
-    public static final double defaultMarkerSize = 17.0;
-    public BufferedImage img1;
-    public String tweet1;
-    public String profileImageUrl;
+    public static final double DEFAULT_MARKER_SIZE = 15.0;
+    public String tweet;
+    public String profileImageURL;
+    public BufferedImage userProfileImage;
 
     public MapMarkerWithImage(Layer layer, Coordinate coordinate, Color color, String profileImageURL, String tweet) {
-        super(layer, null, coordinate, defaultMarkerSize, STYLE.FIXED, getDefaultStyle());
+        super(layer, null, coordinate, DEFAULT_MARKER_SIZE, STYLE.FIXED, getDefaultStyle());
         setColor(Color.BLACK);
         setBackColor(color);
-        img1 = Util.getImageFromURL(profileImageURL);
-        tweet1 = tweet;
-        profileImageUrl = profileImageURL;
+
+        this.tweet = tweet;
+        this.profileImageURL = profileImageURL;
+        userProfileImage = Util.getImageFromURL(profileImageURL);
     }
 
     public String getTweet() {
-        return this.tweet1;
+        return this.tweet;
     }
 
-    public String getProfileImageUrl() {
-        return this.profileImageUrl;
+    public String getProfileImageURL() {
+        return this.profileImageURL;
+    }
+
+    public BufferedImage getUserProfileImage() {
+        return userProfileImage;
     }
 
     @Override
@@ -41,7 +46,7 @@ public class MapMarkerWithImage extends MapMarkerCircle {
             g2.setPaint(this.getBackColor());
             g.fillOval(position.x - radius, position.y - radius, size, size);
             g2.setComposite(oldComposite);
-            g.drawImage(img1, position.x - 10, position.y - 10, 20,20,null);
+            g.drawImage(userProfileImage, position.x - 10, position.y - 10, 20, 20, null);
         }
     }
 

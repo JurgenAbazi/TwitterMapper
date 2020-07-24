@@ -39,9 +39,18 @@ public abstract class TwitterSource extends Observable {
      */
     protected void saveStatusImageToCache(Status status) {
         if (doLogging) {
-            System.out.println(status.getUser().getName() + ": " + status.getText());
+            logStatusInfo(status);
         }
         ImageCache.getInstance().putImageInCache(status.getUser().getProfileImageURL());
+    }
+
+    /**
+     * Print the name of the author of the status and its text.
+     *
+     * @param status The status which is being logged.
+     */
+    private void logStatusInfo(Status status) {
+        System.out.println(status.getUser().getName() + ": " + status.getText());
     }
 
     /**

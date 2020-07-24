@@ -49,15 +49,15 @@ public class Parser {
         scanner = new Scanner(input);
     }
 
-    public Filter parse() throws SyntaxError {
+    public Filter parse() throws StringParseException {
         Filter ans = orexpr();
         if (scanner.peek() != null) {
-            throw new SyntaxError("Extra stuff at end of input");
+            throw new StringParseException("Extra stuff at end of input");
         }
         return ans;
     }
 
-    private Filter orexpr() throws SyntaxError {
+    private Filter orexpr() throws StringParseException {
         Filter sub = andexpr();
         String token = scanner.peek();
         while (token != null && token.equals(OR)) {
@@ -69,7 +69,7 @@ public class Parser {
         return sub;
     }
 
-    private Filter andexpr() throws SyntaxError {
+    private Filter andexpr() throws StringParseException {
         Filter sub = notexpr();
         String token = scanner.peek();
         while (token != null && token.equals(AND)) {
@@ -81,7 +81,7 @@ public class Parser {
         return sub;
     }
 
-    private Filter notexpr() throws SyntaxError {
+    private Filter notexpr() throws StringParseException {
         String token = scanner.peek();
         if (token.equals(NOT)) {
             scanner.advance();
@@ -92,13 +92,13 @@ public class Parser {
         }
     }
 
-    private Filter prim() throws SyntaxError {
+    private Filter prim() throws StringParseException {
         String token = scanner.peek();
         if (token.equals(LPAREN)) {
             scanner.advance();
             Filter sub = orexpr();
             if (!scanner.peek().equals(RPAREN)) {
-                throw new SyntaxError("Expected ')'");
+                throw new StringParseException("Expected ')'");
             }
             scanner.advance();
             return sub;
