@@ -1,0 +1,36 @@
+package app.filters;
+
+import twitter4j.Status;
+
+import java.util.List;
+
+/**
+ * A filter that represents the logical not of its child filter
+ */
+public class NotFilter implements Filter {
+    private final Filter child;
+
+    public NotFilter(Filter child)   {
+        this.child = child;
+    }
+
+    /**
+     * A not filter matches when its child doesn't, and vice versa.
+     *
+     * @param status the tweet to check.
+     * @return whether or not it matches.
+     */
+    @Override
+    public boolean matches(Status status) {
+        return !child.matches(status);
+    }
+
+    @Override
+    public List<String> getTerms() {
+        return child.getTerms();
+    }
+
+    public String toString() {
+        return "not " + child.toString();
+    }
+}
