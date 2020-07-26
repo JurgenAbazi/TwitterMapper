@@ -12,6 +12,8 @@ import util.Util;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -51,9 +53,9 @@ public class Query implements Observer {
     private JCheckBox checkBox;
 
     /**
-     * Query Marker.
+     * List of all the query markers that correspond to this query.
      */
-    private MapMarkerCircle mapMarkerWithImage;
+    private final List<MapMarkerCircle> markersList;
 
     public Query(String queryString, Color color, JMapViewer map) {
         this.queryString = queryString;
@@ -61,6 +63,11 @@ public class Query implements Observer {
         this.color = color;
         this.layer = new Layer(queryString);
         this.map = map;
+        this.markersList = new ArrayList<>();
+    }
+
+    public JMapViewer getMap() {
+        return map;
     }
 
     public Color getColor() {
@@ -95,12 +102,18 @@ public class Query implements Observer {
         return layer.isVisible();
     }
 
+    public List<MapMarkerCircle> getMarkersList() {
+        return markersList;
+    }
+
     /**
      * This query is no longer interesting, so terminate it and remove all traces of its existence.
      */
     public void terminate() {
         layer.setVisible(false);
-        map.removeMapMarker(mapMarkerWithImage);
+        for (MapMarkerCircle mapMarkerCircle : markersList) {
+            map.removeMapMarker(mapMarkerCircle);
+        }
     }
 
     @Override
@@ -112,8 +125,9 @@ public class Query implements Observer {
     public void update(Observable observable, Object o) {
         Status status = (Status) o;
         if (filter.matches(status)) {
-            mapMarkerWithImage = getStatusMapMarker(status);
-            map.addMapMarker(mapMarkerWithImage);
+            MapMarkerCircle mapMarker = getStatusMapMarker(status);
+            map.addMapMarker(mapMarker);
+            markersList.add(mapMarker);
         }
     }
 

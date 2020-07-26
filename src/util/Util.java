@@ -27,7 +27,7 @@ public class Util {
 
 
     static {
-        DEFAULT_IMAGE = getImageFromURL("http://png-2.findicons.com/files/icons/1995/web_application/48/smiley.png");
+        DEFAULT_IMAGE = getImageFromURL("https://upload.wikimedia.org/wikipedia/en/2/26/Led_Zeppelin_-_Led_Zeppelin_IV.jpg");
         EARTH_RADIUS_IN_METRES = 6371000;
     }
 

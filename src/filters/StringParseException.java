@@ -5,12 +5,6 @@ package filters;
  */
 public class StringParseException extends Exception {
     /**
-     * Default Constructor.
-     */
-    public StringParseException() {
-    }
-
-    /**
      * Constructor.
      *
      * @param message The exception message.

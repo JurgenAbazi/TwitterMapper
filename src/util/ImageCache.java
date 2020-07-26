@@ -117,6 +117,12 @@ public class ImageCache {
         return hash;
     }
 
+    public String imagePath(String url) {
+        String path = hashURL(url);
+        path = saveImageToFile(getImageFromCache(url), path);
+        return path;
+    }
+
     // I'm going to assume that hashing is good enough and collisions are rare enough
     private String saveImageToFile(BufferedImage image, String path) {
         File dir = new File("data/imagecache");
@@ -138,12 +144,6 @@ public class ImageCache {
         }
 
         return pathString;
-    }
-
-    public String imagePath(String url) {
-        String path = hashURL(url);
-        path = saveImageToFile(getImageFromCache(url), path);
-        return path;
     }
 
     /**

@@ -26,8 +26,8 @@ public class NotFilter implements Filter {
     }
 
     @Override
-    public List<String> terms() {
-        return child.terms();
+    public List<String> getTerms() {
+        return child.getTerms();
     }
 
     public String toString() {

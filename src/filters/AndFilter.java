@@ -20,10 +20,10 @@ public class AndFilter implements Filter {
     }
 
     @Override
-    public List<String> terms() {
+    public List<String> getTerms() {
         List<String> terms = new ArrayList<>();
-        terms.addAll(leftChild.terms());
-        terms.addAll(rightChild.terms());
+        terms.addAll(leftChild.getTerms());
+        terms.addAll(rightChild.getTerms());
         return terms;
     }
 

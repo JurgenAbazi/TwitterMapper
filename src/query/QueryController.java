@@ -82,7 +82,7 @@ public class QueryController implements Iterable<Query> {
     private Set<String> getQueryTerms() {
         Set<String> queryTermsSet = new HashSet<>();
         for (Query query : queries) {
-            queryTermsSet.addAll(query.getFilter().terms());
+            queryTermsSet.addAll(query.getFilter().getTerms());
         }
         return queryTermsSet;
     }

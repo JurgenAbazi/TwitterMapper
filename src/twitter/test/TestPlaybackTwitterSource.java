@@ -23,11 +23,11 @@ public class TestPlaybackTwitterSource {
         factory.setSpeedup(1.0);
         PlaybackTwitterSource source = (PlaybackTwitterSource) factory.getTwitterSource(PLAYBACK);
 
-        DummyObserver dummyObserver = new DummyObserver();
-        source.addObserver(dummyObserver);
+        FakeObserver fakeObserver = new FakeObserver();
+        source.addObserver(fakeObserver);
 
-        testTwitterSourceWithOneTermFilter(source, dummyObserver);
-        testTwitterSourceWithTwoTermsFilter(source, dummyObserver);
+        testTwitterSourceWithOneTermFilter(source, fakeObserver);
+        testTwitterSourceWithTwoTermsFilter(source, fakeObserver);
     }
 
     /**
@@ -36,7 +36,7 @@ public class TestPlaybackTwitterSource {
      * @param source The twitter source where terms are set.
      * @param observer The DummyObserver object that will observe the source.
      */
-    private void testTwitterSourceWithOneTermFilter(TwitterSource source, DummyObserver observer) {
+    private void testTwitterSourceWithOneTermFilter(TwitterSource source, FakeObserver observer) {
         source.setFilterTerms(createSet("food"));
         pause();
 
@@ -51,7 +51,7 @@ public class TestPlaybackTwitterSource {
      * @param source The twitter source where terms are set.
      * @param observer The DummyObserver object that will observe the source.
      */
-    private void testTwitterSourceWithTwoTermsFilter(TwitterSource source, DummyObserver observer) {
+    private void testTwitterSourceWithTwoTermsFilter(TwitterSource source, FakeObserver observer) {
         int firstBunch = observer.getNumberOfTweets();
         System.out.println("Now adding 'the'");
         source.setFilterTerms(createSet("food", "the"));

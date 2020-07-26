@@ -8,7 +8,7 @@ import java.util.Observer;
  * Deprecation warnings are suppressed since Observer and Observable are requirements of the project.
  */
 @SuppressWarnings("deprecation")
-public class DummyObserver implements Observer {
+public class FakeObserver implements Observer {
     /**
      * Counter that stores the number of tweets.
      */
@@ -17,7 +17,7 @@ public class DummyObserver implements Observer {
     /**
      * Default Constructor.
      */
-    public DummyObserver() {
+    public FakeObserver() {
         numberOfTweets = 0;
     }
 
