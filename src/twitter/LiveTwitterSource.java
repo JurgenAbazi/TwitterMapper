@@ -35,7 +35,6 @@ public class LiveTwitterSource extends TwitterSource {
         Configuration configuration = ConfigurationProvider.getDefaultConfiguration();
         twitterStream = new TwitterStreamFactory(configuration).getInstance();
         initializeListener();
-        twitterStream.addListener(statusListener);
     }
 
     /**
@@ -51,6 +50,7 @@ public class LiveTwitterSource extends TwitterSource {
                 }
             }
         };
+        twitterStream.addListener(statusListener);
     }
 
     /**

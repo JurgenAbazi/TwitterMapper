@@ -17,11 +17,7 @@ public class ImageCache {
     private BufferedImage defaultImage;
     private final Map<String, BufferedImage> cache;
     private final Map<String, String> pathCache;
-    private final static char[] hexArray;
-
-    static {
-        hexArray = "0123456789ABCDEF".toCharArray();
-    }
+    private final static char[] HEX_DIGITS_ARRAY = "0123456789ABCDEF".toCharArray();
 
     /**
      * Private Constructor.
@@ -83,8 +79,8 @@ public class ImageCache {
         char[] hexChars = new char[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
             int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = hexArray[v >>> 4];
-            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+            hexChars[j * 2] = HEX_DIGITS_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_DIGITS_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
     }

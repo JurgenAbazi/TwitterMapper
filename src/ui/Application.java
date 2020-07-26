@@ -7,8 +7,7 @@ import org.openstreetmap.gui.jmapviewer.interfaces.ICoordinate;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import query.Query;
-import twitter.TwitterSource;
-import twitter.TwitterSourceFactory;
+import query.QueryController;
 import util.Util;
 
 import javax.swing.*;
@@ -18,9 +17,6 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
-import java.util.stream.Collectors;
-
-import static twitter.TwitterSourceFactory.SourceType.*;
 
 /**
  * The Twitter viewer application.
@@ -38,14 +34,9 @@ public class Application extends JFrame {
     private BingAerialTileSource bing;
 
     /**
-     * A list of all of the active queries.
+     * Query Manager object.
      */
-    private List<Query> queries;
-
-    /**
-     * The source of tweets, a TwitterSource, either live or playback.
-     */
-    private TwitterSource twitterSource;
+    private QueryController queryController;
 
     /**
      * Default Constructor.
@@ -64,11 +55,10 @@ public class Application extends JFrame {
     private void initialize() {
         setSize(300, 300);
 
-        twitterSource = new TwitterSourceFactory().getTwitterSource(LIVE);
-        queries = new ArrayList<>();
         bing = new BingAerialTileSource();
 
         contentPanel = new ContentPanel(this);
+        queryController = QueryController.getInstance();
         setLayout(new BorderLayout());
         add(contentPanel, BorderLayout.CENTER);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -127,28 +117,12 @@ public class Application extends JFrame {
     }
 
     /**
-     * A new query has been entered via the User Interface
+     * A new query has been entered via the User Interface.
      *
-     * @param query The new query object
+     * @param query The new query object.
      */
     public void addQuery(Query query) {
-        queries.add(query);
-        Set<String> allTerms = getQueryTerms();
-        twitterSource.setFilterTerms(allTerms);
-        contentPanel.addQueryToUI(query);
-        twitterSource.addObserver(query);
-    }
-
-    /**
-     * Returns a list of all terms mentioned in all queries. The live twitter source uses this
-     * to request matching tweets from the Twitter API.
-     *
-     * @return Set containing all query terms.
-     */
-    private Set<String> getQueryTerms() {
-        Set<String> ans = new HashSet<>();
-        queries.stream().map(q -> q.getFilter().terms()).forEach(ans::addAll);
-        return ans;
+        queryController.addQuery(query, contentPanel);
     }
 
     /**
@@ -160,7 +134,7 @@ public class Application extends JFrame {
     private double pixelWidth(Point p) {
         ICoordinate center = getMap().getPosition(p);
         ICoordinate edge = getMap().getPosition(new Point(p.x + 1, p.y));
-        return Util.distanceBetween(center, edge);
+        return Util.getDistanceBetweenPoints(center, edge);
     }
 
     /**
@@ -169,10 +143,14 @@ public class Application extends JFrame {
      * @return A set of layers.
      */
     private Set<Layer> getVisibleLayers() {
-        return queries.stream()
-                .filter(Query::getVisible)
-                .map(Query::getLayer)
-                .collect(Collectors.toSet());
+        Set<Layer> set = new HashSet<>();
+        for (Query query : queryController) {
+            if (query.getVisible()) {
+                Layer layer = query.getLayer();
+                set.add(layer);
+            }
+        }
+        return set;
     }
 
     /**
@@ -187,7 +165,7 @@ public class Application extends JFrame {
         Set<Layer> visibleLayers = getVisibleLayers();
         for (MapMarker m : getMap().getMapMarkerList()) {
             if (visibleLayers.contains(m.getLayer())) {
-                double distance = Util.distanceBetween(m.getCoordinate(), pos);
+                double distance = Util.getDistanceBetweenPoints(m.getCoordinate(), pos);
                 double radiusInPixels = m.getRadius() * pixelWidth;
                 if (distance < radiusInPixels) {
                     ans.add(m);
@@ -219,7 +197,9 @@ public class Application extends JFrame {
     public void updateVisibility() {
         SwingUtilities.invokeLater(() -> {
             System.out.println("Recomputing visible queries");
-            queries.forEach(query -> query.setVisible(query.getCheckBox().isSelected()));
+            for (Query query : queryController) {
+                query.setVisible(query.getCheckBox().isSelected());
+            }
             getMap().repaint();
         });
     }
@@ -230,11 +210,6 @@ public class Application extends JFrame {
      * @param query The query being terminated.
      */
     public void terminateQuery(Query query) {
-        query.terminate();
-        twitterSource.deleteObserver(query);
-        queries.remove(query);
-
-        Set<String> allTerms = getQueryTerms();
-        twitterSource.setFilterTerms(allTerms);
+        queryController.terminateQuery(query);
     }
 }

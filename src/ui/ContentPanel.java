@@ -2,100 +2,75 @@ package ui;
 
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import query.Query;
+import util.Util;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ContentPanel extends JPanel {
-    private JSplitPane topLevelSplitPane;
-    private JSplitPane querySplitPane;
+    private final JSplitPane querySplitPane;
     private JPanel newQueryPanel;
-    private JPanel existingQueryList;
-    private JMapViewer map;
+    private JPanel existingQueriesPanel;
+    private JMapViewer mapViewer;
+    private Application application;
 
-    private Application app;
+    public ContentPanel(Application application) {
+        init(application);
 
-    public ContentPanel(Application app) {
-        init(app);
+        JPanel layerPanelContainer = buildExistingQueriesPanel();
+        querySplitPane = buildQuerySplitPane(layerPanelContainer);
 
-        // NOTE: We wrap existingQueryList in a container so it gets a pretty border.
-        JPanel layerPanelContainer = new JPanel();
-        existingQueryList = new JPanel();
-        existingQueryList.setLayout(new javax.swing.BoxLayout(existingQueryList, javax.swing.BoxLayout.Y_AXIS));
-
-        layerPanelContainer.setLayout(new BorderLayout());
-        layerPanelContainer.setBorder(
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder("Current Queries"),
-                        BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        layerPanelContainer.add(existingQueryList, BorderLayout.NORTH);
-        buildQuerySplitPane(layerPanelContainer);
-        buildTopLevelSplitPane();
+        add(buildTopLevelSplitPane(), "Center");
         revalidate();
         repaint();
     }
 
-    private void init(Application app) {
-        this.app = app;
+    private void init(Application application) {
+        this.application = application;
 
-        map = new JMapViewer();
-        map.setMinimumSize(new Dimension(100, 50));
+        mapViewer = new JMapViewer();
+        mapViewer.setMinimumSize(new Dimension(100, 50));
         setLayout(new BorderLayout());
-        newQueryPanel = new NewQueryPanel(app);
+        newQueryPanel = new NewQueryPanel(application);
     }
 
-    private void buildQuerySplitPane(JPanel layerPanelContainer) {
-        querySplitPane = new JSplitPane(0);
+    private JPanel buildExistingQueriesPanel() {
+        JPanel layerPanelContainer = new JPanel();
+        existingQueriesPanel = new JPanel();
+        existingQueriesPanel.setLayout(new BoxLayout(existingQueriesPanel, BoxLayout.Y_AXIS));
+
+        layerPanelContainer.setLayout(new BorderLayout());
+        Util.addTittledBorderToPanel(layerPanelContainer, "Current Queries");
+        layerPanelContainer.add(existingQueriesPanel, BorderLayout.NORTH);
+
+        return layerPanelContainer;
+    }
+
+    private JSplitPane buildQuerySplitPane(JPanel layerPanelContainer) {
+        JSplitPane querySplitPane = new JSplitPane(0);
         querySplitPane.setDividerLocation(150);
         querySplitPane.setTopComponent(newQueryPanel);
         querySplitPane.setBottomComponent(layerPanelContainer);
+
+        return querySplitPane;
     }
 
-    private void buildTopLevelSplitPane() {
-        topLevelSplitPane = new JSplitPane(1);
+    private JSplitPane buildTopLevelSplitPane() {
+        JSplitPane topLevelSplitPane = new JSplitPane(1);
         topLevelSplitPane.setDividerLocation(150);
         topLevelSplitPane.setLeftComponent(querySplitPane);
-        topLevelSplitPane.setRightComponent(map);
-        add(topLevelSplitPane, "Center");
+        topLevelSplitPane.setRightComponent(mapViewer);
+
+        return topLevelSplitPane;
     }
 
-    // Add a new query to the set of queries and update the UI to reflect the new query.
     public void addQueryToUI(Query query) {
-
-        JPanel colorPanel = new JPanel();
-        colorPanel.setBackground(query.getColor());
-        colorPanel.setPreferredSize(new Dimension(30, 30));
-
-        JButton removeButton = new JButton("X");
-        removeButton.setPreferredSize(new Dimension(30, 20));
-        removeButton.addActionListener(e -> {
-            app.terminateQuery(query);
-            query.terminate();
-            existingQueryList.remove(newQueryPanel);
-            revalidate();
-        });
-
-
-        JPanel newQueryPanel = new JPanel();
-        newQueryPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        newQueryPanel.add(colorPanel, c);
-
-        c = new GridBagConstraints();
-        JCheckBox checkbox = new JCheckBox(query.getQueryString());
-        checkbox.setSelected(true);
-        checkbox.addActionListener(e -> app.updateVisibility());
-        query.setCheckBox(checkbox);
-        c.weightx = 1.0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        newQueryPanel.add(checkbox, c);
-        newQueryPanel.add(removeButton);
-
-        existingQueryList.add(newQueryPanel);
+        ActiveQueryPanel newQueryPanel = new ActiveQueryPanel(query, application, existingQueriesPanel);
+        existingQueriesPanel.add(newQueryPanel);
         validate();
     }
 
     public JMapViewer getMapViewer() {
-        return map;
+        return mapViewer;
     }
 }

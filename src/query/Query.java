@@ -4,6 +4,7 @@ import filters.Filter;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.Layer;
+import org.openstreetmap.gui.jmapviewer.MapMarkerCircle;
 import twitter4j.Status;
 import twitter4j.User;
 import ui.MapMarkerWithImage;
@@ -49,7 +50,10 @@ public class Query implements Observer {
      */
     private JCheckBox checkBox;
 
-    private MapMarkerWithImage mapMarkerWithImage;
+    /**
+     * Query Marker.
+     */
+    private MapMarkerCircle mapMarkerWithImage;
 
     public Query(String queryString, Color color, JMapViewer map) {
         this.queryString = queryString;
@@ -108,13 +112,18 @@ public class Query implements Observer {
     public void update(Observable observable, Object o) {
         Status status = (Status) o;
         if (filter.matches(status)) {
-            Coordinate coordinate = Util.getStatusCoordinates(status);
-            User user = status.getUser();
-            String profileImageURL = user.getProfileImageURL();
-            String tweet = status.getText();
-            mapMarkerWithImage = new MapMarkerWithImage(getLayer(), coordinate, getColor(), profileImageURL, tweet);
+            mapMarkerWithImage = getStatusMapMarker(status);
             map.addMapMarker(mapMarkerWithImage);
         }
+    }
+
+    private MapMarkerCircle getStatusMapMarker(Status status) {
+        Coordinate coordinate = Util.getStatusCoordinates(status);
+        User user = status.getUser();
+        String profileImageURL = user.getProfileImageURL();
+        String tweet = status.getText();
+
+        return new MapMarkerWithImage(getLayer(), coordinate, getColor(), profileImageURL, tweet);
     }
 
 }

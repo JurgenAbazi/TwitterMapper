@@ -30,7 +30,7 @@ public class Scanner {
      * which it then returns as necessary in response to calls to its peek and advance methods.
      * The tokenPattern matches words ([a-zA-Z]+), left and right parenthesis, and whitespaces.
      *
-     * @param input
+     * @param input The input string.
      */
     private void removesWhiteSpacesFromTokens(String input) {
         Pattern tokenPattern = Pattern.compile("\\(|\\)|[a-zA-Z]+|\\s+");
@@ -61,6 +61,6 @@ public class Scanner {
      */
     public String advance() {
         tokens.remove(0);
-        return tokens.size() > 0 ? tokens.get(0) : null;
+        return peek();
     }
 }

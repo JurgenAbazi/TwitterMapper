@@ -37,17 +37,20 @@ public class MapMarkerWithImage extends MapMarkerCircle {
     }
 
     @Override
-    public void paint(Graphics g, Point position, int radius) {
-        int size = radius * 2;
-        if (g instanceof Graphics2D && this.getBackColor() != null) {
-            Graphics2D g2 = (Graphics2D) g;
-            Composite oldComposite = g2.getComposite();
-            g2.setComposite(AlphaComposite.getInstance(3));
-            g2.setPaint(this.getBackColor());
-            g.fillOval(position.x - radius, position.y - radius, size, size);
-            g2.setComposite(oldComposite);
-            g.drawImage(userProfileImage, position.x - 10, position.y - 10, 20, 20, null);
+    public void paint(Graphics graphics, Point position, int radius) {
+        if (!(graphics instanceof Graphics2D) || this.getBackColor() == null) {
+            return;
         }
+
+        Graphics2D graphics2D = (Graphics2D) graphics;
+        Composite temporaryComposite = graphics2D.getComposite();
+        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
+        graphics2D.setPaint(this.getBackColor());
+
+        int size = radius * 2;
+        graphics.fillOval(position.x - radius, position.y - radius, size, size);
+        graphics2D.setComposite(temporaryComposite);
+        graphics.drawImage(userProfileImage, position.x - 10, position.y - 10, 20, 20, null);
     }
 
 }

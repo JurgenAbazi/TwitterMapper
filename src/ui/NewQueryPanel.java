@@ -1,6 +1,7 @@
 package ui;
 
 import query.Query;
+import util.Util;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,6 @@ import java.util.Random;
  */
 public class NewQueryPanel extends JPanel {
     private final JTextField newQuery = new JTextField(10);
-    private final JLabel queryLabel = new JLabel("Enter Search: ");
     private final JPanel colorSetter;
     private final Application app;
     private final Random random;
@@ -21,25 +21,29 @@ public class NewQueryPanel extends JPanel {
     public NewQueryPanel(Application app) {
         this.app = app;
         this.colorSetter = new JPanel();
+        this.random = new Random();
+        buildGUI();
+    }
 
-        random = new Random();
-
+    private void buildGUI() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        queryLabel.setLabelFor(newQuery);
+        JLabel enterSearchLabel = new JLabel("Enter Search: ");
+        enterSearchLabel.setLabelFor(newQuery);
         GridBagConstraints c = new GridBagConstraints();
         c.gridwidth = GridBagConstraints.RELATIVE;
         c.fill = GridBagConstraints.NONE;
         c.gridy = 0;
         c.gridx = 0;
-        add(queryLabel, c);
+        add(enterSearchLabel, c);
+
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.fill = GridBagConstraints.HORIZONTAL;
         newQuery.setMaximumSize(new Dimension(200, 20));
         c.gridx = 1;
         add(newQuery, c);
 
-        add(Box.createRigidArea(new Dimension(5, 5)));
+        createRigidArea();
 
         JLabel colorLabel = new JLabel("Select Color: ");
         colorSetter.setBackground(getRandomColor());
@@ -49,35 +53,50 @@ public class NewQueryPanel extends JPanel {
         c.gridy = 1;
         c.gridx = 0;
         add(colorLabel, c);
+
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 1;
         colorSetter.setMaximumSize(new Dimension(200, 20));
         add(colorSetter, c);
 
-        add(Box.createRigidArea(new Dimension(5, 5)));
+        createRigidArea();
 
         JButton addQueryButton = new JButton("Add New Search");
-        c.gridx = GridBagConstraints.RELATIVE;       //aligned with button 2
-        c.gridwidth = 2;   //2 columns wide
-        c.gridy = GridBagConstraints.RELATIVE;       //third row
+        c.gridx = GridBagConstraints.RELATIVE;
+        c.gridwidth = 2;
+        c.gridy = GridBagConstraints.RELATIVE;
         add(addQueryButton, c);
 
-        setBorder(
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder("New Search"),
-                        BorderFactory.createEmptyBorder(5,5,5,5)));
+        Util.addTittledBorderToPanel(this, "New Search");
+        addQueryButtonActionListener(addQueryButton);
+        app.getRootPane().setDefaultButton(addQueryButton);
+        addColorSetterMouseListeners(app);
+    }
 
+    private void addQueryButtonActionListener(JButton addQueryButton) {
         addQueryButton.addActionListener(e -> {
             if (!newQuery.getText().equals("")) {
-                addQuery(newQuery.getText().toLowerCase());
+                action_AddNewQuery(newQuery.getText().toLowerCase());
                 newQuery.setText("");
             }
         });
+    }
 
-        // This makes the "Enter" key submit the query.
-        app.getRootPane().setDefaultButton(addQueryButton);
+    private void action_AddNewQuery(String newQuery) {
+        Query query = new Query(newQuery, colorSetter.getBackground(), app.getMap());
+        app.addQuery(query);
+        colorSetter.setBackground(getRandomColor());
+    }
 
+    public Color getRandomColor() {
+        final float hue = random.nextFloat();
+        final float saturation = (random.nextInt(2000) + 1000) / 10000f;
+        final float luminance = 0.9f;
+        return Color.getHSBColor(hue, saturation, luminance);
+    }
+
+    private void addColorSetterMouseListeners(Application app) {
         colorSetter.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -91,16 +110,7 @@ public class NewQueryPanel extends JPanel {
         });
     }
 
-    private void addQuery(String newQuery) {
-        Query query = new Query(newQuery, colorSetter.getBackground(), app.getMap());
-        app.addQuery(query);
-        colorSetter.setBackground(getRandomColor());
-    }
-
-    public Color getRandomColor() {
-        final float hue = random.nextFloat();
-        final float saturation = (random.nextInt(2000) + 1000) / 10000f;
-        final float luminance = 0.9f;
-        return Color.getHSBColor(hue, saturation, luminance);
+    private void createRigidArea() {
+        add(Box.createRigidArea(new Dimension(5, 5)));
     }
 }
