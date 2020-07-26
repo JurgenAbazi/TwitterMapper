@@ -1,9 +1,12 @@
 package util.test;
 
 import org.junit.jupiter.api.Test;
+import util.ObjectSinkStream;
 import util.ObjectSourceStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 
 /**
  * Test class for the ObjectSource stream..
@@ -18,8 +21,10 @@ public class TestObjectSourceStream {
 
     @Test
     public void testReadObjectWithIncorrectFilePath() {
-        Object object = new ObjectSourceStream("No files here!").readObject();
-        assertNull(object);
+        try {
+            new ObjectSourceStream("No files here!").readObject();
+            fail("NullPointerException should have been thrown!");
+        } catch (NullPointerException ignored) {
+        }
     }
-
 }

@@ -21,7 +21,7 @@ public class ObjectSourceStream {
             File file = new File(filename);
             objectInputStream = new ObjectInputStream(new FileInputStream(file));
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
