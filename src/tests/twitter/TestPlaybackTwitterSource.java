@@ -1,4 +1,4 @@
-package app.twitter.test;
+package twitter;
 
 import org.junit.jupiter.api.Test;
 import app.twitter.PlaybackTwitterSource;
@@ -23,11 +23,11 @@ public class TestPlaybackTwitterSource {
         factory.setSpeedup(1.0);
         PlaybackTwitterSource source = (PlaybackTwitterSource) factory.getTwitterSource(PLAYBACK);
 
-        FakeObserver fakeObserver = new FakeObserver();
-        source.addObserver(fakeObserver);
+        MockObserver mockObserver = new MockObserver();
+        source.addObserver(mockObserver);
 
-        testTwitterSourceWithOneTermFilter(source, fakeObserver);
-        testTwitterSourceWithTwoTermsFilter(source, fakeObserver);
+        testTwitterSourceWithOneTermFilter(source, mockObserver);
+        testTwitterSourceWithTwoTermsFilter(source, mockObserver);
     }
 
     /**
@@ -36,7 +36,7 @@ public class TestPlaybackTwitterSource {
      * @param source The twitter source where terms are set.
      * @param observer The DummyObserver object that will observe the source.
      */
-    private void testTwitterSourceWithOneTermFilter(TwitterSource source, FakeObserver observer) {
+    private void testTwitterSourceWithOneTermFilter(TwitterSource source, MockObserver observer) {
         source.setFilterTerms(createSet("food"));
         pause();
 
@@ -51,7 +51,7 @@ public class TestPlaybackTwitterSource {
      * @param source The twitter source where terms are set.
      * @param observer The DummyObserver object that will observe the source.
      */
-    private void testTwitterSourceWithTwoTermsFilter(TwitterSource source, FakeObserver observer) {
+    private void testTwitterSourceWithTwoTermsFilter(TwitterSource source, MockObserver observer) {
         int firstBunch = observer.getNumberOfTweets();
         System.out.println("Now adding 'the'");
         source.setFilterTerms(createSet("food", "the"));

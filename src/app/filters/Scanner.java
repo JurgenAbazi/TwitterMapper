@@ -21,7 +21,7 @@ public class Scanner {
      */
     public Scanner(String input) {
         tokens = new LinkedList<>();
-        removesWhiteSpacesFromTokens(input);
+        removeWhiteSpacesFromTokens(input);
     }
 
     /**
@@ -32,7 +32,7 @@ public class Scanner {
      *
      * @param input The input string.
      */
-    private void removesWhiteSpacesFromTokens(String input) {
+    private void removeWhiteSpacesFromTokens(String input) {
         Pattern tokenPattern = Pattern.compile("\\(|\\)|[a-zA-Z]+|\\s+");
         Matcher matcher = tokenPattern.matcher(input);
         while (matcher.find()) {

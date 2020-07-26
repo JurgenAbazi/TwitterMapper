@@ -32,7 +32,7 @@ public class TestFilters {
     @Test
     public void testBasicFilterTerms() {
         Filter filter = new BasicFilter("fred");
-        List<String> listOfTerms = filter.getTerms();
+        List<String> listOfTerms = filter.terms();
 
         assertTrue(listOfTerms.contains("fred"));
         assertFalse(listOfTerms.contains("ed"));
@@ -56,7 +56,7 @@ public class TestFilters {
     @Test
     public void testNotFilterTerms() {
         Filter f = new NotFilter(new BasicFilter("fred"));
-        List<String> listOfTerms = f.getTerms();
+        List<String> listOfTerms = f.terms();
 
         assertTrue(listOfTerms.contains("fred"));
         assertFalse(listOfTerms.contains("ed"));
@@ -81,7 +81,7 @@ public class TestFilters {
     @Test
     public void testAndFilterTerms() {
         Filter f = new AndFilter(new BasicFilter("fred"), new BasicFilter("flintstone"));
-        List<String> terms = f.getTerms();
+        List<String> terms = f.terms();
 
         assertTrue(terms.contains("fred"));
         assertTrue(terms.contains("flintstone"));
@@ -108,7 +108,7 @@ public class TestFilters {
     @Test
     public void testOrFilterTerms() {
         Filter f = new OrFilter(new BasicFilter("fred"), new BasicFilter("flintstone"));
-        List<String> listOfTerms = f.getTerms();
+        List<String> listOfTerms = f.terms();
 
         assertTrue(listOfTerms.contains("fred"));
         assertTrue(listOfTerms.contains("flintstone"));

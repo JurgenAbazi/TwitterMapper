@@ -50,11 +50,15 @@ public class Parser {
     }
 
     public Filter parse() throws StringParseException {
-        Filter ans = orexpr();
+        Filter ans = expr();
         if (scanner.peek() != null) {
             throw new StringParseException("Extra stuff at end of input");
         }
         return ans;
+    }
+
+    private Filter expr() throws StringParseException {
+        return orexpr();
     }
 
     private Filter orexpr() throws StringParseException {

@@ -12,12 +12,7 @@ public class LiveTwitterSource extends TwitterSource {
     /**
      * Streams tweets in realtime.
      */
-    private TwitterStream twitterStream;
-
-    /**
-     * Listens for incoming tweets.
-     */
-    private StatusListener statusListener;
+    private final TwitterStream twitterStream;
 
     /**
      * Default Constructor.
@@ -25,13 +20,6 @@ public class LiveTwitterSource extends TwitterSource {
      * Initializes the Live Twitter Stream.
      */
     public LiveTwitterSource() {
-        initializeTwitterStream();
-    }
-
-    /**
-     * Method which creates and initializes the TwitterStream.
-     */
-    private void initializeTwitterStream() {
         Configuration configuration = ConfigurationProvider.getDefaultConfiguration();
         twitterStream = new TwitterStreamFactory(configuration).getInstance();
         initializeListener();
@@ -42,7 +30,7 @@ public class LiveTwitterSource extends TwitterSource {
      * It listens for new statuses, and decides if it should handle them or not.
      */
     private void initializeListener() {
-        statusListener = new StatusAdapter() {
+        StatusListener statusListener = new StatusAdapter() {
             @Override
             public void onStatus(Status status) {
                 if (status.getPlace() != null) {

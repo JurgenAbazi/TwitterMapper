@@ -25,7 +25,7 @@ public class BasicFilter implements Filter {
     }
 
     @Override
-    public List<String> getTerms() {
+    public List<String> terms() {
         List<String> ans = new ArrayList<>(1);
         ans.add(word);
         return ans;

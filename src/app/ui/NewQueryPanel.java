@@ -13,12 +13,13 @@ import java.util.Random;
  * A UI panel for entering new queries.
  */
 public class NewQueryPanel extends JPanel {
-    private final JTextField newQuery = new JTextField(10);
+    private final JTextField newQuery;
     private final JPanel colorSetter;
     private final ApplicationMainPanel app;
     private final Random random;
 
     public NewQueryPanel(ApplicationMainPanel app) {
+        this.newQuery = new JTextField(10);
         this.app = app;
         this.colorSetter = new JPanel();
         this.random = new Random();

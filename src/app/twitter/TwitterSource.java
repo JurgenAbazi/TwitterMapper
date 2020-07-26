@@ -54,6 +54,15 @@ public abstract class TwitterSource extends Observable {
     }
 
     /**
+     * Getter methods for the terms of the filter.
+     *
+     * @return The terms as an ArrayList.
+     */
+    public List<String> getFilterTerms() {
+        return new ArrayList<>(terms);
+    }
+
+    /**
      * Setter method for the set of terms.
      *
      * @param newTerms New collection of terms.
@@ -62,15 +71,6 @@ public abstract class TwitterSource extends Observable {
         terms.clear();
         terms.addAll(newTerms);
         sync();
-    }
-
-    /**
-     * Getter methods for the terms of the filter.
-     *
-     * @return The terms as an ArrayList.
-     */
-    public List<String> getFilterTerms() {
-        return new ArrayList<>(terms);
     }
 
     /**

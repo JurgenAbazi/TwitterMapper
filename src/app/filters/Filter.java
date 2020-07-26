@@ -40,5 +40,5 @@ public interface Filter {
      *
      * @return a list of terms mentioned in this filter
      */
-    List<String> getTerms();
+    List<String> terms();
 }

@@ -20,10 +20,10 @@ public class OrFilter implements Filter {
     }
 
     @Override
-    public List<String> getTerms() {
+    public List<String> terms() {
         List<String> terms = new ArrayList<>();
-        terms.addAll(leftChild.getTerms());
-        terms.addAll(rightChild.getTerms());
+        terms.addAll(leftChild.terms());
+        terms.addAll(rightChild.terms());
         return terms;
     }
 

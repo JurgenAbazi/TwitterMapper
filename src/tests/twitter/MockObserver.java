@@ -1,4 +1,4 @@
-package app.twitter.test;
+package twitter;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -8,7 +8,7 @@ import java.util.Observer;
  * Deprecation warnings are suppressed since Observer and Observable are requirements of the project.
  */
 @SuppressWarnings("deprecation")
-public class FakeObserver implements Observer {
+public class MockObserver implements Observer {
     /**
      * Counter that stores the number of tweets.
      */
@@ -17,7 +17,7 @@ public class FakeObserver implements Observer {
     /**
      * Default Constructor.
      */
-    public FakeObserver() {
+    public MockObserver() {
         numberOfTweets = 0;
     }
 

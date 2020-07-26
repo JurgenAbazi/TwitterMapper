@@ -33,7 +33,6 @@ public class PlaybackTwitterSource extends TwitterSource {
      */
     public PlaybackTwitterSource(double speedup) {
         this.source = new ObjectSourceStream("data/TwitterCapture.jobj");
-        this.threadStarted = false;
         this.speedup = speedup;
     }
 

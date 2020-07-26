@@ -34,7 +34,7 @@ public class ApplicationMainPanel extends JFrame {
     private BingAerialTileSource bing;
 
     /**
-     * Query Manager object.
+     * Query Controller object.
      */
     private QueryController queryController;
 
@@ -128,12 +128,12 @@ public class ApplicationMainPanel extends JFrame {
     /**
      * How big is a single pixel on the map? Used to compute which tweet markers are at the current most position.
      *
-     * @param p Point in the map.
+     * @param point Point in the map.
      * @return The width of a pixel.
      */
-    private double pixelWidth(Point p) {
-        ICoordinate center = getMap().getPosition(p);
-        ICoordinate edge = getMap().getPosition(new Point(p.x + 1, p.y));
+    private double pixelWidth(Point point) {
+        ICoordinate center = getMap().getPosition(point);
+        ICoordinate edge = getMap().getPosition(new Point(point.x + 1, point.y));
         return Util.getDistanceBetweenPoints(center, edge);
     }
 

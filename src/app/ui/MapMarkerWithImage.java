@@ -10,9 +10,9 @@ import java.awt.image.BufferedImage;
 
 public class MapMarkerWithImage extends MapMarkerCircle {
     public static final double DEFAULT_MARKER_SIZE = 15.0;
-    public String tweet;
-    public String profileImageURL;
-    public BufferedImage userProfileImage;
+    private final String tweet;
+    private final String profileImageURL;
+    private final BufferedImage userProfileImage;
 
     public MapMarkerWithImage(Layer layer, Coordinate coordinate, Color color, String profileImageURL, String tweet) {
         super(layer, null, coordinate, DEFAULT_MARKER_SIZE, STYLE.FIXED, getDefaultStyle());
@@ -30,10 +30,6 @@ public class MapMarkerWithImage extends MapMarkerCircle {
 
     public String getProfileImageURL() {
         return this.profileImageURL;
-    }
-
-    public BufferedImage getUserProfileImage() {
-        return userProfileImage;
     }
 
     @Override
